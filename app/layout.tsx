@@ -9,7 +9,7 @@ const _geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 const _geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
-    title: 'v0 IRL — Prompt to Production | SD February 7th, 2026',
+    title: 'v0 IRL — Prompt to Production | Claremont, CA February 7th, 2026',
     description: 'v0 is launching its biggest product update yet. Join us for v0 IRL events around the world. One week. Global hackathons. Real apps, real work.',
     generator: 'v0.app',
     icons: {
