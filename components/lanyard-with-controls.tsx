@@ -59,6 +59,9 @@ export default function LanyardWithControls({
   defaultName = "",
   defaultVariant = "dark",
 }: LanyardWithControlsProps) {
+  const [isMobile, setIsMobile] = useState<boolean>(
+    () => typeof window !== "undefined" && window.innerWidth < 768
+  );
   const [inputValue, setInputValue] = useState(defaultName);
   const [appliedName, setAppliedName] = useState(defaultName);
   const [cardVariant, setCardVariant] = useState<CardVariant>(defaultVariant);
@@ -70,6 +73,12 @@ export default function LanyardWithControls({
   const cardTemplateRef = useRef<CardTemplateRef>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   
+  useEffect(() => {
+    const handleResize = (): void => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // Auto-capture texture when component mounts with a defaultName from URL
   useEffect(() => {
     // Capture a texture on mount so we don't fall back to the default /1.png
@@ -156,6 +165,10 @@ export default function LanyardWithControls({
       handleApplyName();
     }
   };
+
+  if (isMobile) {
+    return null;
+  }
 
   // Show loading spinner while waiting for initialization
   if (!isInitialized) {
