@@ -45,11 +45,10 @@ export default function HeroSection() {
     
     // Schedule times in minutes from midnight
     const scheduleTimes = [
-        { start: 10 * 60, end: 10 * 60 + 10, title: "Kickoff" },
-        { start: 10 * 60 + 10, end: 10 * 60 + 30, title: "Track selection & Teams" },
-        { start: 10 * 60 + 30, end: 12 * 60, title: "Build session" },
-        { start: 12 * 60, end: 12 * 60 + 30, title: "Ship & submit" },
-        { start: 12 * 60 + 30, end: 23 * 60, title: "Demos" }
+        { start: 13 * 60, end: 13 * 60 + 10, title: "Kickoff" },
+        { start: 13 * 60 + 10, end: 16 * 60 + 30, title: "Build!" },
+        { start: 16 * 60 + 30, end: 17 * 60, title: "Ship & submit" },
+        { start: 17 * 60, end: 18 * 60, title: "Event wrap-up" },
     ];
     
     const getCurrentScheduleIndex = () => {
@@ -113,7 +112,7 @@ export default function HeroSection() {
                                     speedSegment={0.3}
                                     as="h1"
                                     className="max-w-2xl text-balance text-2xl font-medium md:text-3xl xl:text-4xl">
-                                    Prompt to Production - San Diego
+                                    Prompt to Production - Claremont, CA
                                 </TextEffect>
                                 <TextEffect
                                     preset="fade-in-blur"

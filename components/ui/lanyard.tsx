@@ -143,12 +143,12 @@ function Band({maxSpeed = 50, minSpeed = 0, isMobile = false, cardTextureUrl}: B
     const {nodes, materials} = useGLTF(cardGLB) as any;
     const texture = useTexture(typeof lanyard === 'string' ? lanyard : lanyard.src) as THREE.Texture;
     
-    // Load custom card texture if provided, otherwise load default /1.png
+    // Load custom card texture if provided, otherwise load default base card
     const [customCardTexture, setCustomCardTexture] = useState<THREE.Texture | null>(null);
     
     useEffect(() => {
         const loader = new THREE.TextureLoader();
-        const textureToLoad = cardTextureUrl || '/1.png';
+        const textureToLoad = cardTextureUrl || '/card-base-dark.png';
         let loadedTexture: THREE.Texture | null = null;
         
         loader.load(textureToLoad, (texture) => {

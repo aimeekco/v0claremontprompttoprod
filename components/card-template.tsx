@@ -23,7 +23,7 @@ const CardTemplate = forwardRef<CardTemplateRef, CardTemplateProps>(
   ({ userName, variant, onTextureReady, city, date }, ref) => {
     const [baseImage, setBaseImage] = useState<HTMLImageElement | null>(null);
 
-    const imageSrc = variant === "dark" ? "/1.png" : "/2.png";
+    const imageSrc = variant === "dark" ? "/card-base-dark.png" : "/card-base-light.png";
     const textColor = variant === "dark" ? "#ffffff" : "#000000";
 
     // Preload the base card image
@@ -61,6 +61,30 @@ const CardTemplate = forwardRef<CardTemplateRef, CardTemplateProps>(
       const textX = (CANVAS_SIZE / 2) - 55;
       const textY = CANVAS_SIZE - 400;
       ctx.fillText(displayName.toUpperCase(), textX, textY);
+
+      // Render city label
+      if (city) {
+        ctx.fillStyle = textColor;
+        ctx.font = 'normal 48px "Geist Mono", monospace';
+        ctx.textAlign = "right";
+        ctx.textBaseline = "middle";
+
+        const cityTextX = (CANVAS_SIZE / 2) - 55;
+        const cityTextY = CANVAS_SIZE - 1226;
+        ctx.fillText(city.toUpperCase(), cityTextX, cityTextY);
+      }
+
+      // Render date label
+      if (date) {
+        ctx.fillStyle = "#878787";
+        ctx.font = 'normal 48px "Geist Mono", monospace';
+        ctx.textAlign = "right";
+        ctx.textBaseline = "middle";
+
+        const dateTextX = (CANVAS_SIZE / 2) - 55;
+        const dateTextY = CANVAS_SIZE - 1170;
+        ctx.fillText(date.toUpperCase(), dateTextX, dateTextY);
+      }
 
       const dataUrl = canvas.toDataURL("image/png");
       onTextureReady(dataUrl);

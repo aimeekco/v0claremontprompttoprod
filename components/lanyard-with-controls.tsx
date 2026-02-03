@@ -43,6 +43,8 @@ function LinkedInIcon({ className }: { className?: string }) {
 }
 
 const MAX_CHARACTERS = 20;
+const CARD_CITY = "claremont";
+const CARD_DATE = "02.07.2026";
 
 interface LanyardWithControlsProps {
   position?: [number, number, number];
@@ -70,20 +72,14 @@ export default function LanyardWithControls({
   
   // Auto-capture texture when component mounts with a defaultName from URL
   useEffect(() => {
-    // If no defaultName, mark as initialized immediately
-    if (!defaultName) {
-      setIsInitialized(true);
-      return;
-    }
-    
-    // If there's a defaultName, wait for card template to render then capture
+    // Capture a texture on mount so we don't fall back to the default /1.png
     const timer = setTimeout(async () => {
       if (cardTemplateRef.current) {
         await cardTemplateRef.current.captureTexture();
       }
       setIsInitialized(true);
     }, 150);
-    
+
     return () => clearTimeout(timer);
   }, [defaultName]);
 
@@ -99,8 +95,8 @@ export default function LanyardWithControls({
 
   // Share message templates
   const shareMessage = appliedName
-    ? `I'm at @v0 Prompt to Production San Diego! Check out my personalized lanyard`
-    : `Check out v0 IRL San Diego! Create your personalized event lanyard`;
+    ? `I'm at @v0 Prompt to Production Claremont, CA! Check out my personalized lanyard`
+    : `Check out v0 IRL Claremont, CA! Create your personalized event lanyard`;
 
   const handleShareX = useCallback(() => {
     const url = getShareableUrl();
@@ -154,6 +150,7 @@ export default function LanyardWithControls({
     }
   };
 
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && hasChanges) {
       handleApplyName();
@@ -169,6 +166,8 @@ export default function LanyardWithControls({
           userName={inputValue}
           variant={cardVariant}
           onTextureReady={handleTextureReady}
+          city={CARD_CITY}
+          date={CARD_DATE}
         />
         <div className={containerClassName}>
           <div className="flex h-full items-center justify-center">
@@ -187,8 +186,8 @@ export default function LanyardWithControls({
         userName={inputValue}
         variant={cardVariant}
         onTextureReady={handleTextureReady}
-        city='san diego'
-        date='02.07.2026'
+        city={CARD_CITY}
+        date={CARD_DATE}
       />
       <ErrorBoundary>
         <Suspense fallback={<div className="h-full w-full animate-pulse bg-muted/20" />}>
