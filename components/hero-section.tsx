@@ -92,6 +92,19 @@ export default function HeroSection() {
     return (
         <main className="overflow-x-hidden">
             <section className='min-h-dvh overflow-hidden flex flex-col lg:relative'>
+                <div className="absolute inset-x-0 bottom-4 z-20 sm:bottom-6 lg:pr-[50%]">
+                    <div className="mx-auto flex max-w-xl justify-center px-4 sm:justify-start sm:px-6">
+                        <Button
+                            asChild
+                            size="lg"
+                            variant="outline"
+                            className="rounded-md border-white/20 bg-white/10 px-8 py-6 text-lg backdrop-blur-md transition-all duration-300 hover:bg-white/20 mb-24">
+                            <Link href="https://v0.app" target="_blank" rel="noreferrer">
+                                Get started on v0 &rarr;
+                            </Link>
+                        </Button>
+                    </div>
+                </div>
                 {/* Left content - shrinks to fit on mobile, fixed width on desktop */}
                 <div className="flex-shrink-0 pb-4 pt-6 sm:pt-8 lg:pb-8 lg:pt-36 lg:w-1/2 relative z-10">
                     <div className="relative mx-auto flex max-w-xl flex-col px-4 sm:px-6 lg:block">
