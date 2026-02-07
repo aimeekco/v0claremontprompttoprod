@@ -64,7 +64,7 @@ export default function LanyardWithControls({
   );
   const [inputValue, setInputValue] = useState(defaultName);
   const [appliedName, setAppliedName] = useState(defaultName);
-  const [cardVariant, setCardVariant] = useState<CardVariant>(defaultVariant);
+  const [cardVariant] = useState<CardVariant>(defaultVariant);
   const [appliedVariant, setAppliedVariant] = useState<CardVariant>(defaultVariant);
   const [cardTextureUrl, setCardTextureUrl] = useState<string | undefined>(undefined);
   const [textureKey, setTextureKey] = useState(0);
@@ -134,7 +134,7 @@ export default function LanyardWithControls({
   const characterCount = inputValue.length;
   const isAtLimit = characterCount >= MAX_CHARACTERS;
   const isNearLimit = characterCount >= MAX_CHARACTERS - 5;
-  const hasChanges = inputValue !== appliedName || cardVariant !== appliedVariant;
+  const hasChanges = inputValue !== appliedName;
 
   const handleTextureReady = useCallback((dataUrl: string) => {
     setCardTextureUrl(dataUrl);
@@ -213,56 +213,12 @@ export default function LanyardWithControls({
           />
         </Suspense>
       </ErrorBoundary>
-      <div className="px-6 pb-8 lg:absolute lg:bottom-8 lg:right-6 lg:w-auto lg:px-0">
+      <div className="relative z-20 px-6 pb-8 lg:absolute lg:bottom-8 lg:right-6 lg:w-auto lg:px-0">
         <div className="mx-auto max-w-md lg:mx-0 lg:ml-auto">
           <div className="mb-4 flex items-center justify-between">
             <label className="text-sm font-medium text-muted-foreground px-2 py-1 backdrop-blur-md bg-black/10 rounded-md">
               Personalize your card
             </label>
-            <div className="flex items-center gap-3">
-              <label className="flex cursor-pointer items-center gap-1.5">
-                <input
-                  type="radio"
-                  name="cardVariant"
-                  value="dark"
-                  checked={cardVariant === "dark"}
-                  onChange={() => setCardVariant("dark")}
-                  className="sr-only"
-                />
-                <span
-                  className={`flex h-6 w-6 items-center justify-center rounded-full border-2 bg-black transition-all ${
-                    cardVariant === "dark"
-                      ? "border-primary ring-2 ring-primary/30"
-                      : "border-border"
-                  }`}
-                >
-                  {cardVariant === "dark" && (
-                    <span className="h-2 w-2 rounded-full bg-white" />
-                  )}
-                </span>
-              </label>
-              <label className="flex cursor-pointer items-center gap-1.5">
-                <input
-                  type="radio"
-                  name="cardVariant"
-                  value="light"
-                  checked={cardVariant === "light"}
-                  onChange={() => setCardVariant("light")}
-                  className="sr-only"
-                />
-                <span
-                  className={`flex h-6 w-6 items-center justify-center rounded-full border-2 bg-white transition-all ${
-                    cardVariant === "light"
-                      ? "border-primary ring-2 ring-primary/30"
-                      : "border-border"
-                  }`}
-                >
-                  {cardVariant === "light" && (
-                    <span className="h-2 w-2 rounded-full bg-black" />
-                  )}
-                </span>
-              </label>
-            </div>
           </div>
           <div className="flex gap-2">
             <div className="relative flex-1">
