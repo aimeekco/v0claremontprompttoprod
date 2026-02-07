@@ -11,6 +11,8 @@ export default function HeroSection() {
     const searchParams = useSearchParams();
     const highlightOverride = searchParams.get('highlight'); // 'tracks', 'ship', or 'off'
     const eventState = searchParams.get('event'); // 'completed' to force finished state
+    const EVENT_START_MINUTES = 13 * 60;
+    const EVENT_END_MINUTES = 18 * 60;
     
     // Demo mode: ?demo=10:40 simulates being on event day at that time
     const demoTime = searchParams.get('demo');
@@ -24,35 +26,48 @@ export default function HeroSection() {
         return () => clearInterval(timer);
     }, []);
     
-    // Parse demo time if provided (format: "HH:MM" or "H:MM")
-    let isEventDay = currentTime.getFullYear() === 2026 &&
-        currentTime.getMonth() === 1 &&
-        currentTime.getDate() === 7;
-    let currentHour = currentTime.getHours();
-    let currentMinute = currentTime.getMinutes();
+    // Use Pacific time for all event timing logic.
+    const pacificParts = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/Los_Angeles',
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23'
+    }).formatToParts(currentTime);
+    const pacificYear = Number(pacificParts.find(part => part.type === 'year')?.value);
+    const pacificMonth = Number(pacificParts.find(part => part.type === 'month')?.value);
+    const pacificDay = Number(pacificParts.find(part => part.type === 'day')?.value);
+    let isEventDate = pacificYear === 2026 && pacificMonth === 2 && pacificDay === 7;
+    let currentHour = Number(pacificParts.find(part => part.type === 'hour')?.value);
+    let currentMinute = Number(pacificParts.find(part => part.type === 'minute')?.value);
     const isEventCompleted = eventState === 'completed';
     
     if (demoTime) {
         const timeMatch = demoTime.match(/^(\d{1,2}):(\d{2})$/);
         if (timeMatch) {
-            isEventDay = true; // Force event day for demo
+            isEventDate = true; // Force event date for demo
             currentHour = parseInt(timeMatch[1], 10);
             currentMinute = parseInt(timeMatch[2], 10);
         }
     }
     
     const currentTimeInMinutes = currentHour * 60 + currentMinute;
+    const hasEventStarted = isEventDate && currentTimeInMinutes >= EVENT_START_MINUTES;
+    const hasEventEnded = isEventDate && currentTimeInMinutes >= EVENT_END_MINUTES;
+    const isEventLive = hasEventStarted && !hasEventEnded;
     
     // Schedule times in minutes from midnight
     const scheduleTimes = [
-        { start: 13 * 60, end: 13 * 60 + 10, title: "Kickoff" },
-        { start: 13 * 60 + 10, end: 16 * 60 + 30, title: "Build!" },
+        { start: EVENT_START_MINUTES, end: EVENT_START_MINUTES + 10, title: "Kickoff" },
+        { start: EVENT_START_MINUTES + 10, end: 16 * 60 + 30, title: "Build!" },
         { start: 16 * 60 + 30, end: 17 * 60, title: "Ship & submit" },
-        { start: 17 * 60, end: 18 * 60, title: "Event wrap-up" },
+        { start: 17 * 60, end: EVENT_END_MINUTES, title: "Event wrap-up" },
     ];
     
     const getCurrentScheduleIndex = () => {
-        if (!isEventDay) return -1;
+        if (!isEventLive) return -1;
         for (let i = 0; i < scheduleTimes.length; i++) {
             if (currentTimeInMinutes >= scheduleTimes[i].start && currentTimeInMinutes < scheduleTimes[i].end) {
                 return i;
@@ -78,7 +93,7 @@ export default function HeroSection() {
         highlightSubmitButton = true;
     } else if (highlightOverride !== 'off') {
         // Use real time logic
-        if (isEventDay) {
+        if (isEventLive) {
             if (currentScheduleIndex === 1) {
                 // Track selection & Teams
                 highlightTracksButtons = true;
@@ -112,9 +127,9 @@ export default function HeroSection() {
                             {/* Status Pill */}
                             <div className='mb-2 flex justify-center lg:justify-start'>
                                 <div className="inline-flex items-center gap-2 rounded-full bg-gray-200 px-4 py-2">
-                                    <div className={`h-2 w-2 rounded-full ${isEventCompleted ? 'bg-muted-foreground' : isEventDay ? 'bg-green-500 animate-pulse' : 'bg-red-500 animate-pulse'}`}></div>
+                                    <div className={`h-2 w-2 rounded-full ${isEventCompleted ? 'bg-muted-foreground' : isEventLive ? 'bg-green-500 animate-pulse' : 'bg-red-500 animate-pulse'}`}></div>
                                     <span className="text-sm font-medium text-gray-800">
-                                        {isEventCompleted ? 'Event completed' : isEventDay ? 'Ongoing' : 'Not started'}
+                                        {isEventCompleted ? 'Event completed' : isEventLive ? 'Ongoing' : 'Not started'}
                                     </span>
                                 </div>
                             </div>
@@ -153,8 +168,8 @@ export default function HeroSection() {
                                         const hour12 = hour24 === 0 ? 12 : hour24 > 12 ? hour24 - 12 : hour24;
                                         const startTime = `${hour12}:${(item.start % 60).toString().padStart(2, '0')} ${item.start < 12 * 60 ? 'AM' : 'PM'}`;
                                         const isActive = index === currentScheduleIndex;
-                                        const isPast = isEventDay && currentTimeInMinutes > item.end;
-                                        const isInactiveDay = !isEventDay;
+                                        const isPast = hasEventStarted && currentTimeInMinutes > item.end;
+                                        const isInactiveDay = !hasEventStarted;
                                         
                                         return (
                                             <div 
